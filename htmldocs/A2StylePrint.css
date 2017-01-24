@@ -1,0 +1,19 @@
+@media print {
+	#A1L1Section {
+		page-break-before: always;
+	}
+
+	#A1L2Section {
+		page-break-before: always;
+	}
+
+	#navSection {
+		page-break-after: always;
+	}
+	
+	p {
+		orphans: 3;
+		widows: 3;
+	}
+
+}

@@ -1,0 +1,39 @@
+/*
+The approach that was taken to handle small and large screens is the following:
+On a large screen their can be extras in the styling of the document, 
+on the small screen these extras are not present, 
+therefore the style sheet for the large screen is full with extras whilst the style sheet for the small screen is empty.
+
+
+
+*/
+
+@media screen and (max-width: 480px){
+
+
+}
+@media screen and (min-width: 480px){
+	#A1L1Q8Pros {
+	list-style-image : url('http://rs106.pbsrc.com/albums/m252/RiverIsMyGoddess/icons/misc_dancebanana.gif~c200');
+	list-style-position: inside;
+	}
+	
+/*The first item in the list must start with a newline, so the list item starts after the  gif.*/	
+#A1L1Q8Pros > li:before  {
+	content:"\a";
+    white-space: pre;
+	}	
+	
+#A1L1Q8ProsChild	{
+	list-style-image : initial;
+	
+	}
+#A1L1Q8Cons {
+	list-style-image : url('https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQUx4I_Y7tI8TWxyZtGgQQJ1nsImQP1uOS9q9Kj-6Wgr2Fd92fL');
+	list-style-position: inside;
+	}
+#A1L1Q8Cons > li:before  {
+	content:"\a";
+    white-space: pre;
+}	
+}

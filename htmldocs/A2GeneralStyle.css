@@ -1,0 +1,180 @@
+@media all {
+.question_answered {
+	margin-left: 10%;
+	margin-right: 10%;
+}
+
+.question_answered:hover {
+	background-color: lightblue;
+}
+	
+	
+/*To distinct between paragraphs we must either use indentation or an empty line between the paragraphs (http://practicaltypography.com/first-line-indents.html), we use indentation so the empty line must be removed.*/
+#A1L2Q5Answer  p {
+	margin: 0;
+}
+#A1L2Q5Answer p ~ p{
+	text-indent: 5%;
+	
+}
+
+
+#TableExercise{
+	background-image: url("http://www.ikea.com/us/en/images/products/hemnes-coffee-table-brown__0255106_PE399039_S4.JPG");
+	background-repeat: no-repeat;
+	}
+#comparisonTable {
+	border-color: black;
+	border-style: solid;
+	border-width: 8px;
+	border-spacing: 5px;
+	background-color: lightblue;
+}
+
+
+
+table caption {
+	font-size: 200%;
+	font-weight: bold;
+	font-variant: small-caps;
+	font-family: "Times New Roman";
+}
+
+
+#navHeader {
+	list-style-type: lower-roman;
+	list-style-position: outside;	
+}
+
+#navSection {
+	margin-top: 3%;
+	margin-bottom: 3%;
+	text-align: center;
+	border: 8px solid black;
+	background: #f0ffff;
+	font-size: x-large;
+}
+
+#ColorFF0000 {
+	color: #FF0000;
+	background-color: #000000;
+}
+#ColorFFFF00 {
+	color: #FFFF00;
+	background-color: #000000;
+}
+#Color000000 {
+	color: #000000;
+	background-color: #FFFFFF;
+}
+#Color00FF00 {
+	color: #00FF00;
+	background-color: #000000;
+}
+#Color00FFFF {
+	color: #00FFFF;
+	background-color: #000000;
+}
+#ColorFFFFFF {
+	color: #FFFFFF;
+	background-color: #000000;
+}
+
+.generatedKey {
+	text-decoration: underline;
+}
+
+.resource {
+	text-transform: uppercase;
+}
+
+.resource a:link {
+	 color: #FF0000;
+}
+.resource a:visited {
+	 color: #FF00FF;
+}
+.resource a:active {
+	 color: yellow;
+}
+
+#A1L1Q5List {
+	list-style: square outside;
+	font: normal 13px/150% Arial, Helvetica, sans-serif;
+}
+
+caption {
+    caption-side: top;
+}
+
+input:focus {
+	background-color: yellow;
+}
+
+#browserImage {
+	float: none;
+	width: 40%;
+}
+
+#W3CImage {
+	width: 10%;
+	vertical-align: text-top;
+}
+
+/*lab 3*/
+
+
+/*
+Removed:
+#TableExerciseTable {
+	border-color: black;
+	border-style: solid;
+	border-width: 8px;
+	border-spacing: 5px;
+	background-color: white;
+}
+*/
+
+
+input[type=number]{
+   width: inherit;
+} 
+input[type=text]{
+   width: inherit;
+} 	
+	
+#TableContainer {
+	display: inline-block;
+	/*
+	border-color: black;
+	border-style: solid;
+	border-width: 8px;
+	border-spacing: 5px;
+	*/
+	background-color: white;
+	padding: 8px;
+	border: 5px solid black;
+}
+
+table th, table tbody td {
+	border: 1px solid rgb(221, 221, 221);
+
+}
+
+
+/*using Google API widget (https://developers.google.com/maps/documentation/javascript/tutorial)*/
+#map {
+	height:40%;
+	margin-top:10%;
+	margin-left: 10%;
+	margin-right: 10%;
+}
+
+html, body {
+height: 100%;
+margin: 0;
+padding: 0;
+}
+
+
+}

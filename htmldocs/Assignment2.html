@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="A2GeneralStyle.css">	
+		<link rel="stylesheet" type="text/css" href="A2StyleScreen.css">
+		<link rel="stylesheet" type="text/css" href="A2StylePrint.css">
+		
+		<!-- import JQuery via the Google API -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		
+		<!-- import the dynatable library (https://www.dynatable.com/) for multiple widgets, and table ordering -->
+		<script src="jquery.dynatable.js"></script><!-- sourcre: https://www.dynatable.com/ -->
+		<link rel="stylesheet" type="text/css" href="jquery.dynatable.css"><!-- sourcre: https://www.dynatable.com/ -->
+		
+		<script src="assignment2JS.js"></script>
+		
+		<title>
+		Assignment 1
+		</title>
+	</head>
+	
+	<body onload = "initialize()">
+		<section>
+		<h1>Assignment 1</h1>
+			<p>
+				Authors: Jens Wagemaker and Veno Ivanković<br>
+				Date: 13 Jan 2017<br>
+				CopyRight Jens Wagemaker and Veno Ivanković 2017<br>
+			</p>
+		</section>
+		
+		<!-- navigation section -->
+		<section>
+		<nav id="navSection">
+			<ol id="navHeader">
+			<li><a href="#browserCompatibilityReport">Browser Compatibility Report</a></li>
+			<li><a href="#A1TableExercise">Table Exercise</a></li>
+			<li><a href="#A1L1">Lab 1</a></li>
+			<li><a href="#A1L2">Lab 2</a></li>
+			</ol>
+		</nav>
+		</section>
+		
+		<section>
+			<h2 id="browserCompatibilityReport">Browser Compatibility Report</h2>
+			<table id="browserCompatibilityTable">
+					<caption>Browser Compatibility Report</caption>
+					<tr>
+						<th>Test</th><th>Google Chrome</th><th>Internet Explorer</th>
+					</tr>
+					<tr>
+						<td>Page-break</td><td><ul><li>Page-break-after works</li></ul></td><td><ul><li>Page-break-before works</li></ul></td>
+					</tr>
+					<tr>
+						<td>Print style</td>
+						<td><ul>
+						<li>Sections are printed on a new page</li>
+						<li>Date and page title added on top margin of every page</li>
+						<li>URI and page number added on bottom margin</li>
+						</ul></td>
+						<td><ul>
+						<li>No new page at the end of a section</li>
+						<li>No information on any margin of page</li>
+						<li>Larger characters than in Chrome</li>
+						</ul></td>
+					</tr>
+					<tr>
+						<td>Screen sizes</td>
+						<td><ul>
+						<li>All elements except for the Protocol Inventory list and color contrast tables adjusted to screen sizes</li>
+						</ul></td>
+						<td><ul>
+						<li>All elements except for the Protocol Inventory list and color contrast tables adjusted to screen sizes</li>
+						</ul></td>
+					</tr>
+					<tr>
+					<td>Special characters</td><td><ul><li>Appeared as intended</li></ul></td><td><ul><li>Appeared as incorrect symbols and scands</li></ul></td>
+					</tr>
+					</table>
+		</section>
+		<section id="TableExercise">
+			<h2 id="A1TableExercise">Table Excercise</h2>
+			<p class="question_posed">
+				Include, at the start of the document, a table representing a product inventory list.
+				<ul>
+				<li>The table should have exactly five columns, with for each product its name, category, amount (a number stating the quantity in stock), location (of the warehouse where the item is stocked), and purchase date.</li>
+				<li>The table should have at least 3 product items already filled in. An example product item could be: Banana, fruit, 1, Amsterdam, 2015-11-21.</li>
+				<li>The five table cells of the last row should be part of interactive form which allows you to add a new product entry.</li>
+				</ul>
+			<div class="question_answered">
+			<div id="TableContainer">
+			<!-- <form class="forumInput" action="http://wt.ops.few.vu.nl/api/8634c7c8" method="post">	-->		
+						
+				<table id="TableExerciseTable">
+					<caption>Product Inventory List</caption>
+					<thead>
+					<tr>
+						<th>name</th><th>category</th><th>amount</th><th>location</th><th>date</th>
+					</tr>
+					</thead>
+					<tbody class="data">
+					</tbody>
+					<tbody class="input">
+						<form class="formInput" action="http://wt.ops.few.vu.nl/api/663753db" onsubmit="event.preventDefault();" method="post">
+						<tr>
+								<td><input type="text" name="name" size="1" required></td>
+								<td><input type="text" name="category" size="1" required></td>
+								<td><input type="number" name="amount"  required></td>
+								<td><input type="text" name="location" size="2" required></td>
+								<td><input type="text" name="date" size="1" required></td>							
+						</tr>
+						
+						
+						<!-- Must give the JS definition here, because cross origin is not allowed with the file protocol. http://stackoverflow.com/questions/10752055/cross-origin-requests-are-only-supported-for-http-error-when-loading-a-local -->
+						<script>
+						
+							//Reload database data and update the page.
+							function updateData(){	
+								//This function makes use of the dynatable library
+								
+								var dynatable = $('#TableExerciseTable').data('dynatable');	
+
+								//Get data from server with HTTP:GET method.
+								$.ajax({ 
+								url: 'http://wt.ops.few.vu.nl/api/663753db',
+								success: function(data){
+									dynatable.settings.dataset.originalRecords = data;
+									dynatable.process();
+											}
+								});						
+							}
+							
+							function resetDatabase(){
+								//This function makes use of the dynatable library
+				
+								$.get("http://wt.ops.few.vu.nl/api/663753db/reset");
+								updateData();
+							}
+							
+							
+							
+							function postForm(){
+								
+								var $form = $("form.formInput");
+								
+								if ($form[0].checkValidity()) {//check if form is valid
+								
+								$.post("http://wt.ops.few.vu.nl/api/663753db", $form.serialize());//Send form data to the server in JSON format.
+								
+								updateData();//Update the table								
+								}
+							}
+						
+											
+						</script>
+						
+						
+						<tr>
+							<td><input type="submit" id = "submitButton" onclick="postForm()" value="Submit"></td>
+							<!-- <td><input type="button" onclick="$.get(&quot;http://wt.ops.few.vu.nl/api/663753db/reset&quot;)" value="Reset"></td> -->
+							<td><input type="button" onclick="resetDatabase()" value="Reset"></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							
+						</tr>
+						</form>	
+					</tbody>	
+					</table>
+					
+					
+					
+
+					
+					
+					
+				</div>
+				
+			</div>
+			
+			
+			
+		</section>
+		
+		<section id = "A1L1Section">
+			<h2 id = "A1L1">Lab 1</h2>
+			<h3 id="A1L1Q1">Question 1</h3>
+			<p class="question_posed">
+				Make sure you have read Paul Ford's article "On HTML5 and the Group That Rules the Web" (see Reader on BlackBoard). What is, according to this article, the key difference between the HTML5 Recommendation published by W3C and the one published by the WHATWG?
+			</p>
+			<div class="question_answered">
+			<p>
+				According to the article <abbr title ="Web Hypertext Application Technology Working Group"> WHATWG </abbr> was formed as a group by Apple, Mozilla and Opera engineers. Because they were concerned with the direction <abbr title ="World Wide Web Consortium">W3C</abbr> was taking with XHTML and the lack of interest in HTML by W3C. WHATWG defined a new version of HTML known as HTML5 that standardized the improvements in web browser technology. This allowed the Web browser to behave like a “fast, general purpose computer with smarter forms, better audio and video playback” and documented, rationalized and standardized the growing Web. According to the article “the browser would henceforth be a place for applications—an engine that could run software”. Thereby the Web is no longer a document driven one but an application driven one. Also, WHATWG sees the Web as an evolving platform whilst W3C attempts to formally recommend certain practices.	
+			</p>
+			</div>
+
+			<h3 id="A1L1Q2">Question 2</h3>
+			<p class="question_posed">
+				Explain the difference between "the Internet" and "the World-Wide Web". Provide links to the online resources you used (if any) to answer this question.
+			</p>
+			
+			<div class="question_answered">
+			<p>
+				According to <a href = "http://www.webopedia.com/DidYouKnow/Internet/Web_vs_Internet.asp">this source</a> the world wide web is in fact a portion of the Internet. The Internet is a network of networks connections millions of devices globally. The Web is one of many (albeit most commonly used) way of accessing information on the Internet, it usually uses the HTTP protocol to transmit data over the Internet.
+			</p>
+			</div>
+			
+			<h3 id="A1L1Q3">Question 3</h3>
+			<p class="question_posed">
+				What are the three essential technologies that Tim Berners-Lee created to build the World-Wide Web on top of the already existing Internet infrastructure?
+			</p>
+			
+			<div class="question_answered">
+			
+				According to the source three essential technologies that Tim Berners-Lee made to build the web are:
+				<span class="resource">Link to source: <a href="http://webfoundation.org/about/vision/history-of-the-web/">webfoundation</a></span>
+				<dl>
+				<dt>HTML</dt>
+				<dd>An acronym for HyperText Markup Language. The markup (formatting) language for the web.</dd>
+				<dt>URI</dt>
+				<dd>An acronym for Uniform Resource Identifier. A kind of “address” that is unique and used to identify to each resource on the web. It is also commonly called a URL.</dd>
+				<dt>HTTP</dt>
+				<dd>An acronym for Hypertext Transfer Protocol. Allows for the retrieval of linked resources from across the web.</dd>
+				</dl>
+			
+			</div>
+			
+			<h3 id="A1L1Q4">Question 4</h3>
+			<p class="question_posed">
+				Create a document with the text "Hello World!" in a word processor such as Microsoft Word or LibreOffice Writer. Save the file as a Web page or HTML document and inspect the HTML source using a plain text editor or a browser. Describe the key differences of the exported HTML against a regular HTML document created with a plain text editor. Hint: you could use the HTML <code>&lt;pre&gt;</code> tag with the proper escaping to show some example HTML source code generated by the word processor.
+			</p>
+			
+			<div class="question_answered">
+			<p>				
+				If a regular plain text editor is used then the code is quite simple and small to create a Hello World program. On the other hand if a word processor is used then the code is much bgger and more detailed for a Hello World program.
+				The output using MS Word is 754 lines in comparison with  dozen or so lines needed in a text editor. Some example code of making the program in a word processor is shown below:
+				<pre>
+					<code>
+{mso-style-type:export-only;
+mso-default-props:yes;
+font-family:"Calibri",sans-serif;
+					</code>
+				</pre>				
+			</div>
+
+			<h3 id="A1L1Q5">Question 5</h3>
+			<p class="question_posed">
+				Find out which port (according to the current IANA assignment) is used for the following protocols:
+				<ul id="A1L1Q5List">
+					<li>HTTP</li>
+					<li>SSH</li>
+					<li>FTP</li>
+				</ul>
+				Provide a one line description of all three protocols, indicate with a link which authoritative source you have used for each description, and why you think your source is authoritative for this topic.
+				Encode your answer in an HTML <code>table</code> with an <code>id</code> attribute set to <code>protocolTable</code>. The table should have three rows, one for each protocol. It should have at least four columns: for each protocol, list the protocol name, port number, description and the <strong>authoritative source</strong>. You will need this table in Assignment 2.			
+			<div class="question_answered">
+			<p>	
+				The port numbers were found using the authoritative<a href="http://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml"><abbr title="Internet Assigned Numbers Authority"> IANA</abbr> source.</a>
+				<table>
+					<caption>Table</caption>
+					<tr>
+						<th>Protocol name</th><th>Port number</th><th>Description</th><th>Authoritative source</th>
+					</tr>
+					<tr>
+						<td>HTTP</td><td>80</td><td>HTTP defines how messages on the Web should be formatted.</td><td><a href="http://www.webopedia.com/TERM/H/HTTP.html">Webopedia</a> The source is authoritative as Webopedia is dedicated to documenting the Web.</td>
+					</tr>
+					<tr>
+						<td>SSH</td><td>22</td><td>SSH is a network protocol that provides administrators a secure way to access a remote computer.</td><td><a href="http://searchsecurity.techtarget.com/definition/Secure-Shell">WHATis</a> The source is authoritative as it is dedicated to explaining network security.</td>
+					</tr>
+					<tr>
+						<td>FTP</td><td>20 and 21</td><td>FTP is a protocol designed for transferring files over the Internet.</td><td><a href="http://techterms.com/definition/ftp">Techterms</a> The source is authoritative as it is dedicated to explaining Internet and other technological terms.</td>
+					</tr>
+				</table>						
+			</div>
+			
+			<h3 id="A1L1Q6">Question 6</h3>
+			<p class="question_posed">
+				Look at the following two HTML paragraphs:
+				<pre>
+					<code>
+&lt;p&gt;This is an &lt;strong&gt;important&lt;/strong&gt; point.&lt;/p&gt;
+&lt;p&gt;This is another &lt;b&gt;important&lt;/b&gt; point.&lt;/p&gt;
+					</code>
+				</pre>
+				Explain why the HTML of the first paragraph should be preferred. Illustrate this with an example. Also, identify another pair of HTML constructs for which the same rationale holds.			
+			<div class="question_answered">
+			<p>				
+				<code>&lt;Strong&gt;</code> is a semantical tag, used for content markup, while <code>&lt;b&gt;</code> is used for style markup. According to <a href="http://stackoverflow.com/questions/271743/whats-the-difference-between-b-and-strong-i-and-em"> this</a> stack overflow forum: <blockquote>"The tag strong conveys a meaning - showing the text strongly - while b (for bold) conveys a method - bolding the text. With strong, your code still makes sense if you use CSS stylesheets to change what the methods of making the text strong is."</blockquote>
+				Another pair of HTML constructs for which the same rationale holds are the <code>&lt;i&gt;</code> and <code>&lt;em&gt;</code> tags where both put the text in italics but <code>&lt;em&gt;</code> has a semantic meaning for emphasis whilst <code>&lt;i&gt;</code> does not.
+			</div>			
+			
+			<h3 id="A1L1Q7">Question 7</h3>
+			<p class="question_posed">
+				Identify one similarity and one difference between the HTML elements <code>span</code> and <code>div</code>.
+			</p>			
+			<div class="question_answered">
+			<p>	
+				One similarity and one difference of <code>span</code> and <code>div</code> according to <a href="http://htmldog.com/guides/html/intermediate/spandiv/">this source:</a>
+				
+			</p>				
+			<ul id="spanDivList">
+				<li>Similarity: HTML tags apply meaning but the <code>span</code> and <code>div</code> tags have no meaning at all, they are used with CSS to group together a chunk of HTML and hook some information onto that chunk.</li>
+				<li>Difference: The difference between the two is that <code>span</code> element is in-line used for a small amount of HTML whilst <code>div</code>(division) is a block line element used to chunk together larger sections of HTML code.</li>
+			</ul>
+			</div>
+			
+			<h3 id="A1L1Q8">Question 8</h3>
+			<p class="question_posed">
+				Describe the pros and cons of using the <code>iframe</code> tag in HTML
+			</p>			
+			<div class="question_answered">
+			<p>	
+				The pros and cons of <code>iframe</code> are decribed below.
+			</p>
+			<p>
+				<strong>Pros</strong>
+			</p>
+			<ul id="A1L1Q8Pros">
+				<li>You can embed external web content in your page, which has many applications such as:
+					<ul id="A1L1Q8ProsChild">
+						<li>Embedding third party media</li>
+						<li>Embedding code examples</li>
+						<li>Embedding third party applets like payment forms</li>
+					</ul>
+				</li>
+				<li>All current popular browsers support iframe</li>
+			</ul>
+			<p>
+				<strong>Cons</strong>
+			</p>
+			<ul id="A1L1Q8Cons">
+				<li><code>&lt;frames&gt;</code> allow to break the document into several smaller panels, which each displayed a different document. This was considered to be terribel, and the frame tag was deprecated in HTML5 but the <code>&lt;iframe&gt;</code> or inline frame is still avaliable. A pitfall is using <code>&lt;iframes&gt;</code> to mimic <code>&lt;frame&gt;</code> behavior.</li>
+				<li>You can embed external web content to your page, but some constructs should not be made with iframe such as photo galleries and forums</li>
+			</ul>
+			<p>
+				<blockquote>
+					Summarizing: “If you need to embed some independent, already-existing HTML document into the current document, use an <code>&lt;iframe&gt;</code>. If you are building all of it from scratch together, there is almost no good reason to break a page design into several independent documents, especially if they aren’t actually independent pieces of content.” <a href="http://html.com/tags/iframe/">(http://html.com/tags/iframe/)</a>
+				</blockquote>
+			</div>
+			
+			<h3 id="A1L1Q9">Question 9</h3>
+			<p class="question_posed">
+				List potential benefits of using CSS. (Expected length: 7-8 lines)
+			</p>			
+			<div class="question_answered">
+			<p>
+				CSS (in combination with HTML) allows for the separation between style markup and content markup. This separation has many benefits. It increases the accessibility of the web, e.g. screen readers are only interested in content markup and not style markup. From the programming and labor division part it is also beneficial. Some people work on and specialize in the content part and some on the style part, ideally these groups can work independently. Some if the other advantages off CSS are:
+				<ol>
+					<li><q>Easier to maintain and update</q></li>
+					<li><q>Greater consistency in design</q></li>
+					<li><q>More formatting options</q></li>
+					<li><q>Lightweight code</q></li>
+					<li><q>Faster download times</q></li>
+					<li><q>Search engine optimization benefits</q></li>
+					<li><q>Ease of presenting different styles to different viewers</q></li>
+					<li><q>Greater accessibility</q></li>
+				</ol>
+				<span class="resource">Link to source: <a href="http://vanseodesign.com/css/benefits-of-cascading-style-sheets/">http://vanseodesign.com/css/benefits-of-cascading-style-sheets/</a></span>
+			</div>
+
+			<h3 id="A1L1Q10">Question 10</h3>
+			<p class="question_posed">
+				How would you expect a Web browser to render an emphasized word (i.e., included in an <code>em</code> element) in a paragraph with an italic font style? Check whether your browser behaves according to your expectation.
+			</p>			
+			<div class="question_answered">
+			<p>
+				We would expect that the word would be emphasized by printing it in boldface.
+			</p>			
+			<p style="font-style: italic">
+				This is a sentence with style italics.
+			</p>
+			<p style="font-style: italic">
+				This is a <em>sentence</em> with style italics, where the word sentence emphasized.
+			</p>
+			<p>
+				However the tag em didn’t change anything. The reason is that by  default the style for emphasizing is italics. If the font was not set to italics the emphasized word is printed in italics while the rest is not.  When we replace the emphasize tag with the strong tag, the word is printed in boldface. 
+			</p>			
+			</div>
+			
+			<h3 id="A1L1Q11">Question 11</h3>
+			<p class="question_posed">
+				Pick two web browsers from the list below. What are in your view the key differences between the two browsers?
+			</p>	
+			<ol>
+				<li>Apple Safari</li>
+				<li>Google Chrome (or Chromium on Debian Linux)</li>
+				<li>Microsoft Internet Explorer</li>
+				<li>Mozilla Firefox (or Iceweasel on Debian Linux)</li>
+				<li>Opera Web Browser</li>
+			</ol>			
+			<div class="question_answered">
+			<p>
+				We pick Google Chrome and Mozilla Firefox. The key differences are:			
+			<p>
+			<table id="comparisonTable">
+				<tr>
+					<th>Property</th><th>Mozilla Firefox</th><th>Google Chrome</th>
+				</tr>
+				<tr>
+					<td>Open Source</td><td>No</td><td>Yes</td>
+				</tr>
+				<tr>
+					<td>License</td><td>MPL 2.0</td><td>Free under Google Chrome terms of Service</td>
+				</tr>	
+				<tr>	
+					<td>Default search engine</td><td>Yahoo!</td><td>Google</td>
+				</tr>	
+				<tr>	
+					<td>Supports GNU/Linux, UNIX</td><td>Yes</td><td>No</td>
+				</tr>
+				<tr>
+					<td>Tab Groups</td><td>Yes</td><td>No</td>
+				</tr>
+			</table>
+			<figure >
+				<img id = "browserImage" src="http://blog.careco.co.uk/wp-content/uploads/2015/10/web-browsers.jpg"
+				alt="Browsers"/>
+				<figcaption>
+					Browsers
+				</figcaption>
+			</figure>
+			<p>
+				<span class="resource">Link to source: <a href="http://www.diffen.com/difference/Firefox_vs_Google_Chrome">http://www.diffen.com/difference/Firefox_vs_Google_Chrome</a></span>
+			</p>			
+			</div>			
+			
+			
+		</section>
+		
+		<section id="A1L2Section">
+			<h2 id="A1L2">Lab 2</h2>
+
+			<h3 id="A1L2Q1">Question 1</h3>
+			<p class="question_posed">
+				Read the article by Axel Schmetzke, (2001),"Web accessibility at university libraries and library schools" (See Reader for Week 1 on BlackBoard). 
+				Schmetzke found that the most prevalent accessibility error is not having ALT texts for images. 
+				With which WCAG guideline does this correspond?
+			</p>
+			<div class="question_answered">
+			<p>
+			In 1996 the W3C sponsored the Web Accessibility Initiative (WAI). Its “quick tips” guidelines introduced concepts of accessible design among which was to use 
+			the ALT tag to describe the function of images and animations.
+			</p>
+			</div>
+			
+			<h3 id="A1L2Q2">Question 2</h3>
+			<p class="question_posed">
+				The Web Accessibility checker 'Bobby' that Schmetzke used has been taken offline, but its <a href="http://wave.webaim.org/"> predecessor WAVE</a> 
+				can be found online. Run the tool on a web site you think should be accessible. Briefly write down your key observations.
+			</p>
+			<div class="question_answered">
+			<p>
+			The website I thought would be accessible is "http://www.vu.nl/en/" due to the fact that it is the website of a university institution. 
+			WAVE detected 11 errors, 12 alerts, 3 features, 38 structural elements, 5 HTML5 and ARIA and 22 contrast errors.
+			</p>
+			</div>
+			
+			<h3 id="A1L2Q3">Question 3</h3>
+			<p>
+			<p class="question_posed">
+				Acquaint yourself with principles of color contrast, e.g. through the <a href="https://snook.ca/technical/colour_contrast/colour.html#fg=33FF33,bg=333333">
+				Color Contrast Check</a>. Test three color combinations and write a short report of the results and how these should be interpreted.
+			</p>
+			<div class="question_answered">
+			<table>
+				<caption>Color contrast table</caption>
+					<tr>
+						<th>Color 1/</th><th>Color 2/</th><th>Brightness Difference/</th><th>Are colors compliant?/</th><th>Contrast Ratio/</th><th>WCAG 2 AA Compliant/</th><th>WCAG 2 AA Compliant/</th><th>WCAG 2 AA Compliant(18pt+)/</th><th>WCAG 2 AAA Compliant</th><th>WCAG 2 AAA Compliant(18pt+)</th>
+					</tr>
+					<tr>
+						<td id="ColorFF0000">FF0000</td><td id ="Color00FF00">00FF00</td><td>73.44</td><td>510</td><td>sort of..</td><td>2.91</td><td>NO</td><td>NO</td><td>NO</td><td>NO</td>
+					</tr>
+					<tr>
+						<td id = "ColorFFFF00">FFFF00</td><td id = "Color00FFFF">00FFFF</td><td>47.175</td><td>510</td><td>sort of..</td><td>1.17</td><td>NO</td><td>NO</td><td>NO</td><td>NO</td>
+					</tr>
+					<tr>
+						<td id = "Color000000">000000</td><td id = "ColorFFFFFF">FFFFFF</td><td>255</td><td>765</td><td>YES</td><td>21</td><td>YES</td><td>YES</td><td>YES</td><td>YES</td>
+					</tr>
+			</table>
+			<p>
+			Summary: The first combination was pure green as the foreground and pure red as the background, which are two colors common in color blindess. 
+			The results showed that this combination was terrible for the color contrast check. The second combination was a strong yellow and a blue
+			green combination as the foreground and background respectively, which is also a terrible contrast. The third and best combination was using 
+			black text on a white background, which understandably passed all the tests.
+			</p>
+			</div>
+			
+			<h3 id="A1L2Q4">Question 4</h3>
+			<p class="question_posed">
+				Make sure you understand the difference between a <em>Native app</em> versus a <em>(responsive) Web app</em>. Discuss at least one advantage 
+				of native apps over web apps and vice versa.
+			</p>
+			<div class="question_answered">
+			<p>
+			Native apps are written in one language for a single device (Java for android phones and Objective C for iOS devices) whilst web based apps 
+			live in the browser on a device and are written in Javascript and can therefore run on any device. A disadvantage of native apps is that 
+			they take longer to develop and take up storage space. A disadvantage of web based apps is that they require an Internet connection 
+			and are often slower than native apps.
+			</p>
+			</div>
+			
+			<h3 id="A1L2Q5">Question 5</h3>
+			<p class="question_posed">
+				Summarize the key multilingual issues that <a href="https://www.w3.org/">W3C</a> <img id="W3CImage" src="https://www.w3.org/Icons/WWW/w3c_home_nb-v.svg"
+				alt = "W3CImage"/>is addressing within the "Internationalization" activity. 
+				(Expected length: half page)
+			</p>
+			<div class="question_answered" id="A1L2Q5Answer">
+			<p>
+				According  to <a href="https://www.w3.org/International/about">W3C</a> their Internationalization Activity mission is <q>to ensure that W3C's 
+				formats and protocols are usable worldwide in all languages and in all writing systems</q>. According to the lecture slides the international 
+				nature of the Web requires use of many different types of characters, so the standard Unicode was developed to represent text from most of the 
+				world's types of keyboards, the popular encoding of Unicode being UTF-8. The first 128 Unicode characters correspond to ASCII.
+			</p>
+			<p>
+				The W3C <a href="https://www.w3.org/wiki/AB/2014-2015_Priorities/multilingual_W3C"> Internationalization(i18n)</a> Activity <q>works with working 
+				groups and liaises with other organizations to make it possible to use web technologies with different languages, script and cultures</q> 
+				according to the <a href="https://www.w3.org/International/">official website</a>. Their mission satement is to ensure that W3C's formats 
+				and protocols are usable worldwide in all languages and in all writing systems. The internationalization working group looks for issues that 
+				would cause barriers to deployment and use of web technologies due to language, script, region or culture and discusses issues within those 
+				groups. They also develop tests for internationalization features on the Web and produce summaries of their results.
+			</p>
+			</div>
+			
+			<h3 id="A1L2Q6">Question 6</h3>
+			<p class="question_posed">
+				What is the IP address of the server running the website at <code>http://www.few.vu.nl?</code> And the IP address behind the site running 
+				<code>http://www.cs.vu.nl?</code> Explain how you found the answer. How could the results you find influence the web servers' functionality?
+			</p>
+			<div class="question_answered">
+			<p>
+			The IP adress of both the www.few.vu.nl and www.cs.vu.nl was found by opening the command prompt on Windows and typing in ping followed by the 
+			address. The adress found for both websites was the same being 130.37.164.154. This is possible as both websites run on the same server.
+			</p>
+			</div>
+			
+			<h3 id="A1L2Q7">Question 7</h3>
+			<p class="question_posed">
+				Look up information about the new protocol for IP addresses (IPv6, IP version 6). Describe the main features of this protocol and indicate what the reasons 
+				are to move from version 4 to version 6. (Expected length: 1/4 page)
+			</p>
+			<div class="question_answered">
+			<p>
+			According to <a href = "http://www.webopedia.com/DidYouKnow/Internet/ipv6_ipv4_difference.html"> this Webopedia source </a>the reason to move to IPv6 from IPv4 
+			is from growing concern that if the number of end systems connectd to the Internet continues to grow the nuber of avaliable IP adresses will not be enough 
+			for the increased demand, so the demand for Ip adesses will exceed the supply. An IPv4 IP adress is written as four numbers from 0 to 255 separated by periods 
+			for example 1.160.10.240, whilst an IPv6 adress is written in hexadecimal and separated by colons, for example 3ffe:1900:4545:3:200:f8ff:fe21:67cf. A list 
+			of other possible benefits to IPv6 is shown below:
+				<ul>
+					<li>No more NAT (Network Address Translation)</li>
+					<li>Auto-configuration</li>
+					<li>No more private adress collisions</li>
+					<li>Better multicast routing</li>
+					<li>Simpler header format</li>
+					<li>Simplified, more efficient routing</li>
+					<li>True quality of service (QoS) also called flow labeling</li>
+					<li>Built in authentication and privacy support</li>
+					<li>Flexible options and extensions</li>
+					<li>Easier admininistration(no more DHCP)</li></ul>
+			
+			</div>
+			
+			<h3 id="A1L2Q8">Question 8</h3>
+			<p class="question_posed">
+				What are MIME types? Name the most common subtypes of type text. Provide a link to the most authoritative source with the complete list.
+			</p>
+			<div class="question_answered">
+			<p>
+			According to <a href="http://www.freeformatter.com/mime-types-list.html">Freeformatter</a> MIME is short for Multipurpose Internet Mail Extensions and 
+			is a way of identifying files on the Internet according to their nature and format. For example, using the "Content-type" header value defined in a 
+			HTTP response, the browser can open the file with the proper extension/plugin. For text files the most common types for default text/plain are 
+			.doc, .htm, .html, .com, .conf, .def and others. On the <a href="http://www.iana.org/assignments/media-types/media-types.xhtml"> IANA website </a> 
+			the most comprehensive list of MIME types can be found.
+			</p>
+			</div>
+			
+			<h3 id="A1L2Q9">Question 9</h3>
+			<p class="question_posed">
+				Make sure you have read the blog post <a href="https://www.jeffknupp.com/blog/2014/03/12/what-is-a-web-server/">What Is A Web Server?</a> as described in the Week 1 Reader on Blackboard.
+				Knupp states that the GET method is the most common HTTP request method. Name at least one other HTTP request method and find out what the differences are between GET and the one you picked. 
+				Which authoritative source(s) have you used?
+			</p>
+			<div class="question_answered">
+			<p>
+			The HTTP is designed for communications between clients and servers. The most common HTTP request is the GET method which requests data from a specified resource. Conversely, the POST method 
+			submits data to be processed at a specified resource. The authoritative resource used is the Hypertext Transfer Protocol draft standard memo published by R. Fielding et. al. in 1999 by the 
+			Internet Engineering Task Force(IEFT). The document is linked <a href="https://tools.ietf.org/html/rfc2616#section-9.5">here</a> with the POST method described in section 9.5.
+			</p>
+			</div>
+			
+			<h3 id="A1L2Q10">Question 10</h3>
+			<p class="question_posed">
+				Most of the well-known HTTP web servers serve HTML and other content to end users. But behind the scenes, there are many HTTP servers that provide services for other web sites. 
+				To manage who is allowed to do what on these services, they often deploy keys: short sequences of characters that are used to uniquely identify you. We will use an example of 
+				such a web site in the assignments, for which your need a key. So please go the page at <a href="http://wt.ops.few.vu.nl/keys">http://wt.ops.few.vu.nl/keys</a> and generate a key. 
+				Please record the value of the key generated as the answer to this question, so you can use it later in the assignments.
+			</p>
+			<div class="question_answered">
+			<p>
+			The key generated is <span class="generatedKey">663753db</span>.
+			</p>
+			</div>
+			
+			
+			
+		</section>
+			<section id="A2L3Section">
+			<h2 id="A2L3">Lab 3</h2>
+
+			<h3 id="A2L3Q1">Question 1</h3>
+			<p class="question_posed">
+				For the lecture preparation, you should have already made yourself familiar with the material in JavaScript fundamentals on Codecademy, as listed in the Week 2: Reader on BlackBoard. If you did not do this yet, do it now, because you will need it for the next assignment. The tutorial also contains an excercise that explains the console.log(); function.
+			</p>
+			<p class="question_posed">
+				While the Codecademy website lets you conveniently practice and execute your code interactively on their pages, in the real world, your JavaScript code will be hidden in your webpage and be executed when your HTML page is loaded.
+			</p>
+			<p class="question_posed">
+				The very page you are currently looking at, for example, also contains a few calls to console.log(), and these calls should already have been executed when you loaded this page in your browser. Enable the JavaScript console in your favourite browser, so you know you can see all the generated messages. Explain shortly what browser you used and how you have enabled the console.
+			</p>
+			<p class="question_posed">
+				Make sure you have at least tried one or two interesting examples from the tutorial in your own HTML file, so you are sure that console.log(); actually works! .
+			</p>
+			<div class="question_answered">
+			<p>
+				We used Google Chrome Version 55.0.2883.87 m. We enable the console by using right mouse button and then inspect.
+			</p>
+			</div>
+			
+			<h3 id="A2L3Q2">Question 2</h3>
+			<p class="question_posed">
+				For the lecture preparation, you should have already made yourself familiar with the material in the introduction to the HTML DOM on w3schools.com, as listed in the Reader on BlackBoard. If you did not do this, do it now. Show how you can use JavaScript and the DOM API to change the background of the body element to the color red. Also show how you can override the behavior of clicking on an <a> element, using only JavaScript and the DOM API, without other libraries. Check and make sure the code in your answer really works in your browser (If you do not know what an API is, find this out too!).
+			</p>
+			<div class="question_answered">
+			<p>
+				To be able to execute JS we subscribed a funtion to the body's onload event. Using: <code> &ltbody onload = "Lab3Q2a();"&gt</code>. Where the body function was defined by:
+				</p>
+				<p>
+				<pre><code>
+function Lab3Q2a() {
+	var body = document.getElementsByTagName("BODY");
+	body[0].style.backgroundColor = "yellow";
+	var a = document.getElementById("Lab3Q2b");
+	a.addEventListener("click",function(event){alert("changed"); event.preventDefault();})
+	return;
+}</code></pre>
+			</p>
+			<p>
+				Note that the function above also changed the link's linking behavior. We used <code>&lta id = "Lab3Q2b" href="http://google.nl"&gtgoogle&lt/a&gt&lt/code&gt to hook into the anchor object.
+			</p>
+			</div>
+			
+			<h3 id="A2L3Q3">Question 3</h3>
+			<p class="question_posed">
+				For the lecture preparation, should have already made yourself familiar with the basics in the JQuery tutorial, as listed in the Reader on BlackBoard. If you did not do this, do it now. Make sure that the example runs on your machine. Compare the use of JQuery to change the behavior of the <a> element as shown in the example with the code you used in the previous question. List pros and cons of both methods.
+			</p>
+			<div class="question_answered">
+			<p>
+				We changed the behavior of the link using the following code:
+			</p>
+			<pre><code>
+$( document ).ready(function() {
+	$( "a" ).click(function( event ) {
+		alert( "The link will no longer take you to jquery.com" );
+		event.preventDefault();
+	});
+});
+			</code></pre>
+			<p>
+				If the only thing that is need to be done is to disable the default behavior of a link, then using JQuery seems to be given more overhead, it takes more lines to program and the JQuery library must be retrieved.
+			</p>
+			<p>
+				JS + DOM pros:
+			</p>
+			<ul>
+				<li>No additional libraries needed.</li>
+			</ul>
+			<p>
+				Cons:
+			</p>
+			<ul>
+				<li>More difficult because it is more low level.</li>
+			</ul>
+			<p>
+				JQuery pros:
+			</p>
+			<ul>
+				<li>Simpler implementation.</li>
+			</ul>
+			<p>
+				Cons:
+			</p>
+			<ul>
+				<li>Library needs to be fetched.</li>
+			</ul>
+			
+			</div>
+			
+			<h3 id="A2L3Q4">Question 4</h3>
+			<p class="question_posed">
+				Describe the major similarities and differences between Python and JavaScript. (if you are more familiar with Java, you may also compare Java to JavaScript)
+			</p>
+			<div class="question_answered">
+			<p>
+				Similarities:
+			</p>
+			<ul>
+				<li>Both interpreted</li>
+				<li>Dynamically typed</li>
+				<li>Weakly typed</li>
+			</ul>
+			<p>
+				Differences:
+			</p>
+			<ul>
+				<li>JS has no classes only objects.</li>
+				<li>JS is interpreted by the browser, Python by a standalone interpreter.</li>
+			</ul>
+			</div>
+			
+			<h3 id="A2L3Q5">Question 5</h3>
+			<p class="question_posed">
+				What does the acronym "AJAX" stand for? Explain the role of the term the first "A" refers to.
+			</p>
+			<div class="question_answered">
+			<p>
+				AJAX stands for Asynchronous JavaScript And Xml. Asynchronous means that when the client makes a request to the server, it doesn’t have to wait for the response, but can continue doing other work. When the requested goods arrive, an event fires, and everything is handled by a previously specified handler function.
+			</p>
+			</div>
+			
+			<h3 id="A2L3Q6">Question 6</h3>
+			<p class="question_posed">
+				What is the role of the host objects in JavaScript? Name two often used host objects. Why are there no equivalents in Java or Python?
+			</p>
+			<div class="question_answered">
+			<p>
+				Host objects are built-in objects, that gives the programmer (limited) control over the web browser (window host object) and full control over the document (document host object).
+			</p>
+			</div>
+			
+			<h3 id="A2L3Q7">Question 7</h3>
+			<p class="question_posed">
+				Name two objects that are built into the JavaScript language. Briefly explain their role.
+			</p>
+			<div class="question_answered">
+			<p>
+				String: “The String global object is a constructor for strings, or a sequence of characters.”
+				<a href="https://developer.mozilla.org/nl/docs/Web/JavaScript/Reference/Global_Objects/String">(https://developer.mozilla.org/nl/docs/Web/JavaScript/Reference/Global_Objects/String)</a>
+			</p>
+			<p>
+				Math: “The JavaScript Math object allows you to perform mathematical tasks on numbers.” <a href="http://www.w3schools.com/js/js_math.asp">(http://www.w3schools.com/js/js_math.asp)</a>
+			</p>	
+			</div>
+			
+			<h3 id="A2L3Q8">Question 8</h3>
+			<p class="question_posed">
+				Briefly explain the role of events and event listeners in JavaScript.
+			</p>
+			<div class="question_answered">
+			<p>
+				Events and event listeners belong to the event-driven programming paradigm. Where programs are always in a never ending loop, during each iteration of the loop it is checked if any event has fired, if so all the event listeners (functions that have subscribed to the event) are called and executed.
+			</p>
+			
+			</div>
+			
+			<h3 id="A2L3Q9">Question 9</h3>
+			<p class="question_posed">
+				Many organisations provide lectures or tutorials on web technology and publish videos and slides of these lectures on the web in so called "webinars". These lectures provide an often overlooked, but rich source of information. Watch the video of Mano Marks' Google Map API tutorial. Explain in 3 lines the functionality of the autocomplete component that Marks describes. (a good understanding the Google MAP API might also save you time in the next queston if you choose to use geographical maps to enhance your HTML page). See the Google Website for more information on the API.
+			</p>
+			<div class="question_answered">
+			<p>
+				The autocomplete component gives suggests input to the user. The input that is suggested is based on what is most likely the user wants to input, given the partial input already given.
+			</p>
+			</div>
+			
+			<h3 id="A2L3Q10">Question 10</h3>
+			<p class="question_posed">
+				Use (at least) one interactive widget from a JavaScript widget library to enhance the output or input of the product inventory. Be creative! If you really lack inspiration, try adding a calendar widget to better support input of dates (in case your browser does not do that by default), or to use a map widget for visualising the location fields in your product table.
+			</p>
+			<div class="question_answered">
+			<p>
+				Answer here ---------------------------
+			</p>
+			</div>
+			
+			
+
+			
+		</section>
+	</body>
+</html>
