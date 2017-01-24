@@ -15,7 +15,7 @@
 
 # Include more methods/decorators as you use them
 # See http://bottle.readthedocs.org/en/stable/api.html#bottle.Bottle.route
-from bottle import response, error, get, post
+from bottle import response, error, get, post, request
 import json
 
 
@@ -38,8 +38,10 @@ def hello_world():
     return json.dumps(response_body)
 
 @post('/database')
-def post_db(form):
-    print(form)
+def post_db():
+    print(request.forms.get('name'))
+    print(request.forms)#here the forms object must be stored in the database.
+    return "bla bla"
 
 @get('/db-example')
 def db_example(db):
@@ -61,6 +63,8 @@ def db_example(db):
     names = db.fetchall() # Use db.fetchone() to get results one by one
 
     # TODO: set the appropriate HTTP headers and HTTP response codes.
+
+    
 
     # Return results as JSON
     return json.dumps(names)
@@ -106,5 +110,5 @@ if __name__ == "__main__":
 
     install(WtDbPlugin())
     install(WtCorsPlugin())
-    run(host='localhost', port=8080, reloader=True, debug=True, autojson=False)
+    run(host='localhost', port=8080, reloader=False, debug=True, autojson=False)
 

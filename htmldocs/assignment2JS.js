@@ -62,7 +62,8 @@ function postForm(){
 	
 	if ($form[0].checkValidity()) {//check if form is valid
 	
-	$.post("http://wt.ops.few.vu.nl/api/663753db", $form.serialize());//Send form data to the server in JSON format.
+	//$.post("http://wt.ops.few.vu.nl/api/663753db", $form.serialize());//Send form data to the server in JSON format.
+	$.post("http://localhost:8080/database", $form.serialize());//Send form data to the server in JSON format.
 	
 	updateData();//Update the table								
 	}
