@@ -38,10 +38,29 @@ def hello_world():
     return json.dumps(response_body)
 
 @post('/database')
-def post_db():
-    print(request.forms.get('name'))
-    print(request.forms)#here the forms object must be stored in the database.
+def post_db(db):
+    #print(request.forms.get('name'))
+    print(request.forms.dict)#here the forms object must be stored in the database.
+    
+    
+    myDict = request.forms.dict
+    #http://stackoverflow.com/questions/9336270/using-a-python-dict-for-a-sql-insert-statement
+    #placeholders = ', '.join(['%s'] * len(myDict))
+    columns = ', '.join(myDict.keys())
+    values = ', '.join(myDict.values())
+    sql = "INSERT INTO inventory ("+columns+") VALUES ("+values+ " )"
+    db.execute(sql)
+        
+    
     return "bla bla"
+
+@get('/database')
+def get_db(db):
+    db.execute('Select * from inventory')
+    data = db.fetchall()
+    response.content_type = 'application/json'
+    return json.dumps(data)
+
 
 @get('/db-example')
 def db_example(db):

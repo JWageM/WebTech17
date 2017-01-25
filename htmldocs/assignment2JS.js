@@ -1,7 +1,8 @@
 function initialize(){
 
 	$.ajax({
-		url: 'http://wt.ops.few.vu.nl/api/663753db',
+		//url: 'http://wt.ops.few.vu.nl/api/663753db',
+		url: 'http://localhost:8080/database',
 		success: function(data){
 			$('#TableExerciseTable').dynatable({
 				table: {
@@ -41,7 +42,8 @@ function updateData(){
 
 	//Get data from server with HTTP:GET method.
 	$.ajax({ 
-	url: 'http://wt.ops.few.vu.nl/api/663753db',
+	//url: 'http://wt.ops.few.vu.nl/api/663753db',
+	url: 'http://localhost:8080/database',
 	success: function(data){
 		dynatable.settings.dataset.originalRecords = data;
 		dynatable.process();
