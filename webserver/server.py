@@ -15,7 +15,7 @@
 
 # Include more methods/decorators as you use them
 # See http://bottle.readthedocs.org/en/stable/api.html#bottle.Bottle.route
-from bottle import response, error, get, post, request, put
+from bottle import response, error, get, post, request, put, delete
 import json
 
 
@@ -61,7 +61,10 @@ def post_db(db):
 
 @get('/database')
 def get_db(db):
-    db.execute('Select * from inventory')
+    if ('id' in request.params.keys()):
+        db.execute('Select * from inventory where id='+request.params['id'])
+    else:
+        db.execute('Select * from inventory')
     data = db.fetchall()
     response.content_type = 'application/json'
     return json.dumps(data)
@@ -79,6 +82,17 @@ def change_item(db):
     
     
     return "put bla"#Need proper response message
+ 
+@delete('/database')
+def delete_item(db):
+    myDict = request.json[0]
+    columns = ', '.join(myDict.keys())
+    values = ', '.join(myDict.values())
+    sql = 'DELETE FROM inventory WHERE id='+myDict['id']
+    db.execute(sql)
+    
+    return "delete bla"  
+ 
     
 
 @get('/db-example')
