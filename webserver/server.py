@@ -39,25 +39,25 @@ def hello_world():
 
 @post('/database')
 def post_db(db):
-#     #print(request.forms.get('name'))
-#     #print(request.forms.dict)#here the forms object must be stored in the database.
-#     
-#     
-#     #myDict = request.forms.dict
-#     myDict = request.params
-#     #http://stackoverflow.com/questions/9336270/using-a-python-dict-for-a-sql-insert-statement
-#     #placeholders = ', '.join(['%s'] * len(myDict))
-#     columns = ', '.join(myDict.keys())
-#     values = '\', \''.join(myDict.values())
-#     #flattened_myDict = [item for sublist in myDict.values() for item in sublist]
-#     #values = ', '.join(flattened_myDict)
-#     sql = "INSERT INTO inventory ("+columns+") VALUES (\'"+values+ "\' )"
-#     db.execute(sql)     
-#     
-#     print(request.url)
-#     return "bla bla"#what needs to be returned?
+    #print(request.forms.get('name'))
+    #print(request.forms.dict)#here the forms object must be stored in the database.
+     
+     
+    #myDict = request.forms.dict
+    myDict = request.json[0]
+    #http://stackoverflow.com/questions/9336270/using-a-python-dict-for-a-sql-insert-statement
+    #placeholders = ', '.join(['%s'] * len(myDict))
+    columns = ', '.join(myDict.keys())
+    values = '\', \''.join(myDict.values())
+    #flattened_myDict = [item for sublist in myDict.values() for item in sublist]
+    #values = ', '.join(flattened_myDict)
+    sql = "INSERT INTO inventory ("+columns+") VALUES (\'"+values+ "\' )"
+    db.execute(sql)     
+     
+    print(request.url)
+    return "bla bla"#what needs to be returned?
     pass
-
+ 
 
 @get('/database')
 def get_db(db):
@@ -66,14 +66,18 @@ def get_db(db):
     response.content_type = 'application/json'
     return json.dumps(data)
 
-@put('/database/<item_name>')
-def change_item(item_name, db):
-    myDict = request.params
+@put('/database')
+def change_item(db):
+    myDict = request.json[0]
     columns = ', '.join(myDict.keys())
     values = ', '.join(myDict.values())
     
     print(columns+values)
     #db.execute('select * from inventory where name='+item_name)
+    sql = 'update inventory set name=\''+myDict['name']+'\',category=\''+myDict['category']+'\',amount='+myDict['amount']+',location=\''+myDict['location']+'\',date=\''+myDict['date']+'\' where id='+myDict['id']
+    db.execute(sql)
+    
+    
     return "put bla"#Need proper response message
     
 
