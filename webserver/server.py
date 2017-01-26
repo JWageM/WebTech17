@@ -15,7 +15,7 @@
 
 # Include more methods/decorators as you use them
 # See http://bottle.readthedocs.org/en/stable/api.html#bottle.Bottle.route
-from bottle import response, error, get, post, request
+from bottle import response, error, get, post, request, put
 import json
 
 
@@ -39,20 +39,25 @@ def hello_world():
 
 @post('/database')
 def post_db(db):
-    #print(request.forms.get('name'))
-    print(request.forms.dict)#here the forms object must be stored in the database.
-    
-    
-    myDict = request.forms.dict
-    #http://stackoverflow.com/questions/9336270/using-a-python-dict-for-a-sql-insert-statement
-    #placeholders = ', '.join(['%s'] * len(myDict))
-    columns = ', '.join(myDict.keys())
-    values = ', '.join(myDict.values())
-    sql = "INSERT INTO inventory ("+columns+") VALUES ("+values+ " )"
-    db.execute(sql)
-        
-    
-    return "bla bla"
+#     #print(request.forms.get('name'))
+#     #print(request.forms.dict)#here the forms object must be stored in the database.
+#     
+#     
+#     #myDict = request.forms.dict
+#     myDict = request.params
+#     #http://stackoverflow.com/questions/9336270/using-a-python-dict-for-a-sql-insert-statement
+#     #placeholders = ', '.join(['%s'] * len(myDict))
+#     columns = ', '.join(myDict.keys())
+#     values = '\', \''.join(myDict.values())
+#     #flattened_myDict = [item for sublist in myDict.values() for item in sublist]
+#     #values = ', '.join(flattened_myDict)
+#     sql = "INSERT INTO inventory ("+columns+") VALUES (\'"+values+ "\' )"
+#     db.execute(sql)     
+#     
+#     print(request.url)
+#     return "bla bla"#what needs to be returned?
+    pass
+
 
 @get('/database')
 def get_db(db):
@@ -61,6 +66,16 @@ def get_db(db):
     response.content_type = 'application/json'
     return json.dumps(data)
 
+@put('/database/<item_name>')
+def change_item(item_name, db):
+    myDict = request.params
+    columns = ', '.join(myDict.keys())
+    values = ', '.join(myDict.values())
+    
+    print(columns+values)
+    #db.execute('select * from inventory where name='+item_name)
+    return "put bla"#Need proper response message
+    
 
 @get('/db-example')
 def db_example(db):
