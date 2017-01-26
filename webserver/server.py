@@ -15,7 +15,7 @@
 
 # Include more methods/decorators as you use them
 # See http://bottle.readthedocs.org/en/stable/api.html#bottle.Bottle.route
-from bottle import response, error, get, post, request, put, delete
+from bottle import response, error, get, post, request, put, delete, abort
 import json
 
 
@@ -26,19 +26,12 @@ import json
 #       everything works.
 ###############################################################################
 
-@get('/hello')
-def hello_world():
-    '''Responds to http://localhost:8080/hello with an example JSON object
-    '''
-    response_body = {'Hello': 'World'}
-
-    # This returns valid JSON in the response, but does not yet set the 
-    # associated HTTP response header.  This you should do yourself in your 
-    # own routes! 
-    return json.dumps(response_body)
-
 @post('/database')
 def post_db(db):
+    response.content_type = 'application/json' #serve response in json
+    
+    
+    
     #print(request.forms.get('name'))
     #print(request.forms.dict)#here the forms object must be stored in the database.
      
@@ -54,13 +47,16 @@ def post_db(db):
     sql = "INSERT INTO inventory ("+columns+") VALUES (\'"+values+ "\' )"
     db.execute(sql)     
      
-    print(request.url)
-    return "bla bla"#what needs to be returned?
-    pass
+
+    return "[{\"action\":\"post\"}]"  
+
  
 
 @get('/database')
 def get_db(db):
+    response.content_type = 'application/json'
+    
+    
     if ('id' in request.params.keys()):
         db.execute('Select * from inventory where id='+request.params['id'])
     else:
@@ -71,56 +67,52 @@ def get_db(db):
 
 @put('/database')
 def change_item(db):
-    myDict = request.json[0]
-    columns = ', '.join(myDict.keys())
-    values = ', '.join(myDict.values())
+    response.content_type = 'application/json' #serve response in json    
     
-    print(columns+values)
+    myDict = request.json[0]
+
+    if not id_is_present(db, myDict['id']):
+        abort(404,"Item with id = "+myDict['id']+' not found.')
+
+
+
     #db.execute('select * from inventory where name='+item_name)
     sql = 'update inventory set name=\''+myDict['name']+'\',category=\''+myDict['category']+'\',amount='+myDict['amount']+',location=\''+myDict['location']+'\',date=\''+myDict['date']+'\' where id='+myDict['id']
     db.execute(sql)
     
+    response.status = 204 #Succes, no content
     
-    return "put bla"#Need proper response message
+    return "[{\"action\":\"update\"}]"  
+
+def id_is_present(db,id_arg):
+    sql = 'SELECT 1 FROM inventory WHERE id=\''+id_arg+'\''
+    db.execute(sql)
+    data = db.fetchall()
+    if data:#Data is not empty
+        return True
+    else:
+        return False
+
  
 @delete('/database')
 def delete_item(db):
+    response.content_type = 'application/json' #serve response in json    
+    
+    
+    
     myDict = request.json[0]
-    columns = ', '.join(myDict.keys())
-    values = ', '.join(myDict.values())
+
+    if not id_is_present(db, myDict['id']):
+        abort(404,"Item with id = "+myDict['id']+' not found.')
+
     sql = 'DELETE FROM inventory WHERE id='+myDict['id']
     db.execute(sql)
     
-    return "delete bla"  
+    response.status = 204 #Succes, no content
+    
+    return "[{\"action\":\"delete\"}]"  
  
-    
-
-@get('/db-example')
-def db_example(db):
-    '''Responds with names of all products in Amsterdam
-    
-    Add a parameter 'db' to your function to get a database cursor from
-    WtPlugin. The parameter db is of type sqlite3.Cursor. Documentation is
-    at https://docs.python.org/2/library/sqlite3.html#sqlite3.Cursor
-
-    If you want to start with a clean sheet, delete the file 'inventory.db'.
-    It will be automatically re-created and filled with one example item.
-
-    Access this route at http://localhost:8080/db-example
-    '''
-    # Execute SQL statement to select the name of all items located in A'dam
-    db.execute("SELECT name FROM inventory WHERE location=?", ('Amsterdam',))
-
-    # Get all results in a list of dictionaries
-    names = db.fetchall() # Use db.fetchone() to get results one by one
-
-    # TODO: set the appropriate HTTP headers and HTTP response codes.
-
-    
-
-    # Return results as JSON
-    return json.dumps(names)
-
+   
 
 
 
@@ -136,8 +128,14 @@ def error_404_handler(e):
 
     # Content type must be set manually in error handlers
     response.content_type = 'application/json'
+    
+    return json.dumps({'Error': {'Message': response.body, 'Status': e.status_code}})
 
-    return json.dumps({'Error': {'Message': e.status_line, 'Status': e.status_code}})
+
+
+
+
+
 
 ###############################################################################
 # This starts the server
